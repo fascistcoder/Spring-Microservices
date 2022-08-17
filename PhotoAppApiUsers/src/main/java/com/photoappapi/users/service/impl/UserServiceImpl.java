@@ -7,6 +7,7 @@ import com.photoappapi.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -21,13 +22,18 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
 	private final UsersRepository usersRepository;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 	@Override public UserDto createUser(UserDto userDetails) {
 		userDetails.setUserId(UUID.randomUUID().toString());
+		userDetails.setEncryptedPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
+
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
 		Users users = modelMapper.map(userDetails, Users.class);
-		users.setEncryptedPassword("test");
 		usersRepository.save(users);
-		return null;
+
+		return modelMapper.map(users, UserDto.class);
 	}
 }

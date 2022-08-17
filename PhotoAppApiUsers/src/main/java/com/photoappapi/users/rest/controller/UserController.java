@@ -39,11 +39,13 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity createUser(@Valid @RequestBody CreateUserRequestModel createUserRequestModel){
+	public ResponseEntity<CreateUserRequestModel> createUser(@Valid @RequestBody CreateUserRequestModel createUserRequestModel){
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		UserDto userDto = modelMapper.map(createUserRequestModel, UserDto.class);
-		userService.createUser(userDto);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+
+		UserDto createdUser = userService.createUser(userDto);
+		CreateUserRequestModel body = modelMapper.map(createdUser, CreateUserRequestModel.class);
+		return ResponseEntity.status(HttpStatus.CREATED).body(body);
 	}
 }

@@ -7,9 +7,13 @@ import com.photoappapi.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -35,5 +39,14 @@ public class UserServiceImpl implements UserService {
 		usersRepository.save(users);
 
 		return modelMapper.map(users, UserDto.class);
+	}
+
+	@Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Users user = usersRepository.findByEmail(username);
+		if(user == null){
+			throw new UsernameNotFoundException(username);
+		}
+
+		return new User(user.getEmail(), user.getEncryptedPassword(), true, true, true, true, new ArrayList<>());
 	}
 }

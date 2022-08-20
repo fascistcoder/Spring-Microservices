@@ -49,4 +49,13 @@ public class UserServiceImpl implements UserService {
 
 		return new User(user.getEmail(), user.getEncryptedPassword(), true, true, true, true, new ArrayList<>());
 	}
+
+	@Override public UserDto getUserDetailsByEmail(String email) {
+		Users user = usersRepository.findByEmail(email);
+		if(user == null){
+			throw new UsernameNotFoundException(email);
+		}
+
+		return new ModelMapper().map(user, UserDto.class);
+	}
 }

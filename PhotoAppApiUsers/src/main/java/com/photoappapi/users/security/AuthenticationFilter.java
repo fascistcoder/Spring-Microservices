@@ -7,6 +7,7 @@ import com.photoappapi.users.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.InvalidKeyException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,7 @@ import java.util.Objects;
  * @version 1.0
  * @since 18/08/22
  */
-
+@Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final UserService userService;
@@ -58,6 +59,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		String userName = ((User) authResult.getPrincipal()).getUsername();
 		UserDto userDto = userService.getUserDetailsByEmail(userName);
+
+		log.info("Time :{} ", Long.parseLong(Objects.requireNonNull(environment.getProperty("token.expiration_time"))));
 
 		String token = Jwts.builder()
 				.setSubject(userDto.getUserId())

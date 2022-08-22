@@ -30,7 +30,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Override protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeHttpRequests().antMatchers("/**").permitAll().anyRequest().authenticated().and()
+		http.authorizeHttpRequests()
+				.antMatchers("/users-ws/actuator/**").permitAll()
+				.antMatchers("/actuator/**").permitAll()
+				.antMatchers("/users-ws/**").permitAll()
+				.antMatchers("/**").permitAll().anyRequest().authenticated().and()
 				.addFilter(getAuthenticationFilter());
 		http.headers().frameOptions().disable();
 	}

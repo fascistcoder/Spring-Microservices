@@ -1,5 +1,6 @@
 package com.photoappapi.users;
 
+import com.photoappapi.users.exception.FeignErrorDecoder;
 import feign.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
